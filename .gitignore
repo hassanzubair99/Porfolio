@@ -1,0 +1,38 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Production
+dist
+build
+server/public
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+
+# Vercel
+.vercel
+.next
+
+# Misc
+*.log
+*.tar.gz
+vite.config.ts.*
+coverage
