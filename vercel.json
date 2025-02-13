@@ -1,7 +1,6 @@
 {
   "version": 2,
   "env": {},
-  // Force new deployment
   "builds": [
     {
       "src": "server/**/*.ts",
