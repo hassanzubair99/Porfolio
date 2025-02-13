@@ -2,6 +2,7 @@ import { pgTable, text, serial, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Messages table schema
 export const messages = pgTable("messages", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -19,33 +20,17 @@ export const insertMessageSchema = createInsertSchema(messages).pick({
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type Message = typeof messages.$inferSelect;
 
-// Define the User type
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  // add other user fields as needed
-}
-
-// Define the InsertUser type
-export interface InsertUser {
-  name: string;
-  email: string;
-  // add other fields needed for user creation
-}
-
-// Export users table schema
+// Users table schema
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
+  username: text("username").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  name: true,
-  email: true,
-});
+export const insertUserSchema = createInsertSchema(users);
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
+// Export types based on the schema
 export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
