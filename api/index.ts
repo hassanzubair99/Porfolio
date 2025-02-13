@@ -1,16 +1,12 @@
 import app from '../server';
 
-// Handle any initialization
-const handler = async (req: any, res: any) => {
-  try {
-    return app(req, res);
-  } catch (error) {
-    console.error('API Error:', error);
-    return res.status(500).json({ 
-      error: 'Internal Server Error',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
+const handler = (req: any, res: any) => {
+  // Ensure we're not trying to start a server
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
+  
+  return app(req, res);
 };
 
 export default handler; 

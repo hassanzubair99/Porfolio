@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "env": {},
+  "env": {
+    "NODE_ENV": "production"
+  },
   "builds": [
     {
       "src": "api/index.ts",
