@@ -7,9 +7,11 @@ export const db = {
     update: async () => ({}),
     delete: async () => ({})
   },
-  // Add insert method
-  insert: async () => ({}),
-  // Add query method if needed
+  users: {
+    insert: async () => ({}),
+    findMany: async () => [],
+    findUnique: async () => null
+  },
   query: async () => ({})
 }
 

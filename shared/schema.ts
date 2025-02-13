@@ -35,9 +35,17 @@ export interface InsertUser {
 }
 
 // Export users table schema
-export const users = {
-  id: 'id',
-  name: 'name',
-  email: 'email'
-  // add other fields
-};
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertUserSchema = createInsertSchema(users).pick({
+  name: true,
+  email: true,
+});
+
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
