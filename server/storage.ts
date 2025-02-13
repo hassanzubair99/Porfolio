@@ -6,14 +6,14 @@ import { db } from "./db";
 // you might need
 
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
+  getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   createMessage(message: InsertMessage): Promise<Message>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<number, User>;
+  private users: Map<string, User>;
   currentId: number;
 
   constructor() {
@@ -21,7 +21,7 @@ export class MemStorage implements IStorage {
     this.currentId = 1;
   }
 
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(id: string): Promise<User | undefined> {
     return this.users.get(id);
   }
 
@@ -32,29 +32,34 @@ export class MemStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { ...insertUser, id };
+    const id = this.currentId++.toString();
+    const user: User = { ...insertUser, id, createdAt: new Date() };
     this.users.set(id, user);
     return user;
   }
+
   async createMessage(message: InsertMessage): Promise<Message> {
     throw new Error("Method not implemented.");
   }
 }
 
 export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
-    throw new Error("Method not implemented.");
+  async getUser(id: string): Promise<User | undefined> {
+    const user = await db.user.findUnique();
+    return user || undefined;
   }
+
   async getUserByUsername(username: string): Promise<User | undefined> {
-    throw new Error("Method not implemented.");
+    const users = await db.user.findMany();
+    return users.find(u => u.username === username);
   }
+
   async createUser(user: InsertUser): Promise<User> {
-    throw new Error("Method not implemented.");
+    return db.user.create(user);
   }
+
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
-    const [message] = await db
-      .insert(messages)
+    const [message] = await db.insert(messages)
       .values(insertMessage)
       .returning();
     return message;
