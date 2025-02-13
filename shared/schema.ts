@@ -18,3 +18,26 @@ export const insertMessageSchema = createInsertSchema(messages).pick({
 
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type Message = typeof messages.$inferSelect;
+
+// Define the User type
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  // add other user fields as needed
+}
+
+// Define the InsertUser type
+export interface InsertUser {
+  name: string;
+  email: string;
+  // add other fields needed for user creation
+}
+
+// Export users table schema
+export const users = {
+  id: 'id',
+  name: 'name',
+  email: 'email'
+  // add other fields
+};
