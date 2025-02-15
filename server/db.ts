@@ -1,6 +1,6 @@
 import type { User, InsertUser, Message, InsertMessage } from '../shared/schema';
 
-// Mock database implementation without requiring DATABASE_URL
+// Simple in-memory store
 export const db = {
   user: {
     findMany: async (): Promise<User[]> => [],

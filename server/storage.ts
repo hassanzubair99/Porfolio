@@ -1,6 +1,4 @@
-import { users, type User, type InsertUser } from "@shared/schema";
-import { messages, type Message, type InsertMessage } from "@shared/schema";
-import { db } from "./db";
+import type { User, InsertUser, Message, InsertMessage } from "../shared/schema";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -14,11 +12,15 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
-  currentId: number;
+  private messages: Map<string, Message>;
+  private currentUserId: number;
+  private currentMessageId: number;
 
   constructor() {
     this.users = new Map();
-    this.currentId = 1;
+    this.messages = new Map();
+    this.currentUserId = 1;
+    this.currentMessageId = 1;
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -27,44 +29,24 @@ export class MemStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(
-      (user) => user.username === username,
+      (user) => user.username === username
     );
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++.toString();
+    const id = this.currentUserId++.toString();
     const user: User = { ...insertUser, id, createdAt: new Date() };
     this.users.set(id, user);
     return user;
   }
 
-  async createMessage(message: InsertMessage): Promise<Message> {
-    throw new Error("Method not implemented.");
-  }
-}
-
-export class DatabaseStorage implements IStorage {
-  async getUser(id: string): Promise<User | undefined> {
-    const user = await db.user.findUnique();
-    return user || undefined;
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const users = await db.user.findMany();
-    return users.find(u => u.username === username);
-  }
-
-  async createUser(user: InsertUser): Promise<User> {
-    return db.user.create(user);
-  }
-
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
-    const [message] = await db.insert(messages)
-      .values(insertMessage)
-      .returning();
+    const id = this.currentMessageId++.toString();
+    const message: Message = { ...insertMessage, id, createdAt: new Date() };
+    this.messages.set(id, message);
     return message;
   }
 }
 
-export const userStorage = new MemStorage();
-export const messageStorage = new DatabaseStorage();
+// Export a single instance to be used throughout the app
+export const storage = new MemStorage();
